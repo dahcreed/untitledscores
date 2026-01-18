@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NFL Dashboard with Full Theme</title>
+<title>NFL Dashboard Fixed 3-Per-Row</title>
 <style>
 :root {
   --accent-color: blue; /* bright color */
@@ -45,10 +45,22 @@ body {
 /* Content area */
 .content { flex:1; padding:20px; overflow-y:auto; background:var(--sidebar-color); transition: background 0.3s, color 0.3s; }
 
-/* Scoreboard cards */
-.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; }
-.card { background:var(--card-color); padding:16px; border-radius:14px; box-shadow:0 2px 6px rgba(0,0,0,0.6); transition: all 0.3s; }
+/* Scoreboard cards: 3 per row fixed */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap:16px;
+  justify-content:flex-start;
+}
+.card {
+  flex: 0 0 calc((100% / 3) - 10.66px); /* exactly 3 per row */
+  max-width: calc((100% / 3) - 10.66px);
+  min-width: calc((100% / 3) - 10.66px);
+  background:var(--card-color); padding:16px; border-radius:14px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.6); transition: all 0.3s;
+}
 .card:hover { transform: scale(1.02); }
+
 .row { display:flex; align-items:center; justify-content:space-between; font-size:18px; margin-bottom:6px; }
 .row div { display:flex; align-items:center; }
 .row img { height:40px; width:40px; margin-right:8px; object-fit:contain; }
@@ -158,24 +170,19 @@ function updateTheme(){
     btn.style.background = btn.classList.contains('active') ? accent : darkShade;
     btn.style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
   });
-  // Update sidebar and cards
   document.documentElement.style.setProperty('--sidebar-color', getDarkerColor(accent, 0.15));
   document.documentElement.style.setProperty('--card-color', getDarkerColor(accent, 0.15));
   document.documentElement.style.setProperty('--input-bg', getDarkerColor(accent, 0.25));
   document.documentElement.style.setProperty('--input-text', getComputedStyle(document.documentElement).getPropertyValue('--text-color'));
 }
 
-// Function to get darker shade from any color
 function getDarkerColor(col, amt){
   const temp = document.createElement("div");
   temp.style.color = col; document.body.appendChild(temp);
   const rgb = window.getComputedStyle(temp).color;
   document.body.removeChild(temp);
   const [r,g,b] = rgb.match(/\d+/g).map(Number);
-  const newR = Math.floor(r*amt);
-  const newG = Math.floor(g*amt);
-  const newB = Math.floor(b*amt);
-  return `rgb(${newR},${newG},${newB})`;
+  return `rgb(${Math.floor(r*amt)},${Math.floor(g*amt)},${Math.floor(b*amt)})`;
 }
 
 // Tab functionality
